@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ErrorBoundary from "../common/elements/ErrorBoundary";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Header from "./Header";
+import { TMDB_API_HEADERS } from "../utils/tmdbConstants";
+import { addNowPlayingMovies } from "../store/movieSlice";
+import useNowPlayingMovies from "../utils/hooks/useNowPlayingMovies";
+import MainContainer from "./MainContainer";
+import SecondaryContainer from "./SecondaryContainer";
 
 const Browse = () => {
-  const user = useSelector((state) => state.user);
+  const movie = useSelector((state) => state.movie.nowPlayingMovies);
+  useNowPlayingMovies();
 
-  console.log("user from store", user);
   return (
     <ErrorBoundary
       onError={(e) => {
@@ -15,6 +20,8 @@ const Browse = () => {
     >
       <div>
         <Header />
+        <MainContainer />
+        <SecondaryContainer />
       </div>
     </ErrorBoundary>
   );

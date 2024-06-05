@@ -1,19 +1,16 @@
 import React, { useEffect } from "react";
 import Login from "./Login";
 import Browse from "./Browse";
-import {
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import NotFound from "../common/elements/NotFound";
 import { useDispatch } from "react-redux";
 import { auth } from "../utils/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../store/userSlice";
+import PrivateRouter from "./PrivateRouter";
 
 const Body = () => {
   const dispatch = useDispatch();
- 
 
   const appRouter = createBrowserRouter([
     {
@@ -30,18 +27,11 @@ const Body = () => {
     },
   ]);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(addUser(user.toJSON()));
-      } else {
-        dispatch(removeUser());
-      }
-    });
-  }, []);
   return (
     <div>
-      <RouterProvider router={appRouter} />
+      
+        <RouterProvider router={appRouter} />
+     
     </div>
   );
 };

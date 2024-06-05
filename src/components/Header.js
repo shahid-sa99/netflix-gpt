@@ -1,13 +1,31 @@
-import { signOut } from "firebase/auth";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { addUser, removeUser } from "../store/userSlice";
+import { NETFLIX_LOGO, USER_ICON } from "../utils/constants";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [openDropDown, setOpenDropDown] = useState(false);
   const user = useSelector((state) => state.user);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(addUser(user.toJSON()));
+        navigate("/browse");
+      } else {
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+
+    // using the call back to unsubscribe from onAuthStateChanged event when the component unmounts
+    return () => unsubscribe();
+  }, []);
 
   const dropDownClickHandler = () => {
     setOpenDropDown(!openDropDown);
@@ -15,34 +33,25 @@ const Header = () => {
 
   const signOutClickHandler = () => {
     signOut(auth)
-      .then(() => {
-        navigate("/");
-      })
+      .then(() => {})
       .catch((error) => {
         // An error happened.
       });
   };
   return (
-    <div className="absolute px-7  bg-gradient-to-b from-black w-screen  flex justify-between ">
-      <div>
-        <img
-          className="w-44"
-          src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-          alt="logo"
-        />
+    <div className="absolute px-7  bg-gradient-to-t z-[999]  from-black w-screen  flex justify-between ">
+      <div className="mt-4">
+        <img className="w-44" src={NETFLIX_LOGO} alt="netflix-logo" />
       </div>
 
       {user && (
-        <div className="relative">
-          <div className=" cursor-pointer py-6 " onClick={dropDownClickHandler}>
-            <img
-              alt="logout-icon"
-              src="https://occ-0-5690-3663.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABTZ2zlLdBVC05fsd2YQAR43J6vB1NAUBOOrxt7oaFATxMhtdzlNZ846H3D8TZzooe2-FT853YVYs8p001KVFYopWi4D4NXM.png?r=229"
-            />
+        <div className="relative mt-2 mr-6">
+          <div className=" cursor-pointer py-6  " onClick={dropDownClickHandler}>
+            <img alt="logout-icon" src={USER_ICON} />
           </div>
 
           {openDropDown && (
-            <div className="border absolute cursor-pointer right-0 w-60 p-4 top-12 bg-black text-white flex flex-col m-2 ">
+            <div className="border absolute cursor-pointer right-0 w-60 p-4 top-12 mt-4 mr-2 bg-black text-white flex flex-col m-2 ">
               <div className="px-2"> {user?.displayName}</div>
               <div className="px-2">Manage Profiles</div>
               <div className="px-2">Account</div>

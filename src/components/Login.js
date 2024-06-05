@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import netflixLogin from "../assets/images/netflixLogin.jpg";
 import Header from "./Header";
 import { validateLoginData } from "../utils/validate";
@@ -15,7 +15,6 @@ import { addUser } from "../store/userSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [errorMessage, setIsErrorMessage] = useState("");
 
@@ -63,7 +62,6 @@ const Login = () => {
           })
             .then(() => {
               dispatch(addUser(auth.currentUser.toJSON()));
-              navigate("/browse");
             })
             .catch((error) => {
               setIsErrorMessage(error.message);
@@ -82,7 +80,6 @@ const Login = () => {
       )
         .then((userCredential) => {
           const user = userCredential.user;
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
