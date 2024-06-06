@@ -7,10 +7,18 @@ import { addNowPlayingMovies } from "../store/movieSlice";
 import useNowPlayingMovies from "../utils/hooks/useNowPlayingMovies";
 import MainContainer from "./MainContainer";
 import SecondaryContainer from "./SecondaryContainer";
+import useMovieGenres from "../utils/hooks/useMovieGenres";
+import usePopularMovies from "../utils/hooks/usePopularMovies";
+import useTopRatedMovies from "../utils/hooks/useTopRatedMovies";
+import useUpComingMovies from "../utils/hooks/useUpComingMovies";
 
 const Browse = () => {
   const movie = useSelector((state) => state.movie.nowPlayingMovies);
   useNowPlayingMovies();
+  useMovieGenres();
+  usePopularMovies();
+  useTopRatedMovies();
+  useUpComingMovies();
 
   return (
     <ErrorBoundary
